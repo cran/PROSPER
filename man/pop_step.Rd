@@ -4,8 +4,14 @@
 \alias{pop_step}
 \title{Surviving a non-selective process}
 \usage{
-pop_step(start, start_comb = NA, result = NA, stepname = NA,
-  surv_prob, max_vec_length = 1e+07)
+pop_step(
+  start,
+  start_comb = NA,
+  result = NA,
+  stepname = NA,
+  surv_prob,
+  max_vec_length = 1e+07
+)
 }
 \arguments{
 \item{start}{column names of parental cohorts. \code{character vector}.}
@@ -31,7 +37,7 @@ Individuals that reach the next growth stage are picked by using \code{\link{rbi
 When more than one column is selected with \code{start}, they are summed and the result is passed to the picking process. By setting \code{start_comb} the sum is added as a column to \code{dfgenotype}.
 }
 \examples{
-struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=1)
 gen_freq(af=c(0.01,0.8), n_seeds=10000)
 #How many individuals of each genotype will reach the next growth stage?
 pop_step(start="initialSB",  stepname="survivingthewinter",

@@ -11,23 +11,63 @@
 \alias{prosper.LOLRI}
 \title{Population dynamic models - Examples}
 \usage{
-prosper.ECHCG(param.weed = PROSPER::param.ECHCG, area = NA, af = NA,
-  dom = NA, epis = 0, put = 0.05, sdrate = 0.4, thresh = 20,
-  Rmx = 10, rate = 100, duration = NA, repetitions = NA,
-  crop_list = "corn", max_vec_length = 1e+07, undersowing = NA)
+prosper.ECHCG(
+  param.weed = PROSPER::param.ECHCG,
+  area = NA,
+  af = NA,
+  dom = NA,
+  epis = 0,
+  put = 0.05,
+  sdrate = 0.4,
+  thresh = 20,
+  Rmx = 10,
+  rate = 100,
+  duration = NA,
+  repetitions = NA,
+  crop_list = "corn",
+  max_vec_length = 1e+07,
+  undersowing = NA
+)
 
-prosper.GALAP(param.weed = PROSPER::param.GALAP, sens_seeds = 400,
-  area = 100, af = c(0.03, 0.08, 0.02), dom = c(0.5, 0.5, 0.5),
-  epis = 0, put = 0.05, thresh = 20, Rmx = 10, rate = 100,
-  sdrate = 0.4, duration = 15, repetitions = 1,
-  crop_list = "wheat", max_vec_length = 1e+07)
+prosper.GALAP(
+  param.weed = PROSPER::param.GALAP,
+  sens_seeds = 400,
+  area = 100,
+  af = c(0.03, 0.08, 0.02),
+  dom = c(0.5, 0.5, 0.5),
+  epis = 0,
+  put = 0.05,
+  thresh = 20,
+  Rmx = 10,
+  rate = 100,
+  sdrate = 0.4,
+  duration = 15,
+  repetitions = 1,
+  crop_list = "wheat",
+  max_vec_length = 1e+07
+)
 
-prosper.LOLRI(param.weed = PROSPER::param.LOLRI, area = 100,
-  af = c(0.005, 0.01, 0.015, 0.02), dom = 0.5, epis = 0,
-  put = 0.05, sdrate = 0.4, thresh = 20, Rmx = 10, dc = 150,
-  kc = 1/11, kw = 1/33, SSmax = 30000, rate = 100, pen_co = c(1,
-  0.5), duration = 10, repetitions = 1, crop_list = c("wheat"),
-  max_vec_length = 1e+07)
+prosper.LOLRI(
+  param.weed = PROSPER::param.LOLRI,
+  area = 100,
+  af = c(0.005, 0.01, 0.015, 0.02),
+  dom = 0.5,
+  epis = 0,
+  put = 0.05,
+  sdrate = 0.4,
+  thresh = 20,
+  Rmx = 10,
+  dc = 150,
+  kc = 1/11,
+  kw = 1/33,
+  SSmax = 30000,
+  rate = 100,
+  pen_co = c(1, 0.5),
+  duration = 10,
+  repetitions = 1,
+  crop_list = c("wheat"),
+  max_vec_length = 1e+07
+)
 }
 \arguments{
 \item{param.weed}{A \code{data.frame} with population dynamic parameters with or without stochasticity. The structure of \code{param.weed} is essential (see details). The easiest way to create the \code{data.frame} is to adopt an example (\link{param.ECHCG}).}
@@ -101,7 +141,7 @@ The parameter \code{undersowing} describes the probability of surviving a second
 }}
 
 \examples{
-mod_echcg <- prosper.ECHCG(param.weed = param.ECHCG, area=100, af=c(0.001),
+mod_echcg <- prosper.ECHCG(param.weed = param.ECHCG, area=100, af=c(0.001), 
                              undersowing=0.2,dom=0.5,duration=7,repetitions=1)
 
 

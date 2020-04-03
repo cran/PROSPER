@@ -4,8 +4,7 @@
 \alias{struc_saveSimData}
 \title{Saving simulation data}
 \usage{
-struc_saveSimData(rep_counter, simcycle, start_name, end_name, loci,
-  simstruc)
+struc_saveSimData(rep_counter, simcycle, start_name, end_name, simstruc)
 }
 \arguments{
 \item{rep_counter}{number of the current repetition. \code{integer}.}
@@ -15,8 +14,6 @@ struc_saveSimData(rep_counter, simcycle, start_name, end_name, loci,
 \item{start_name}{name of the column with the first population stage in the simulation. \code{character}.}
 
 \item{end_name}{name of the column with the last population stage in the simulation. This is taken as the first stage in the next simulation cycle. \code{character}.}
-
-\item{loci}{\code{numeric}, the number of loci used in the simulation.}
 
 \item{simstruc}{two numbers, the first defines the number of repetitions for the simulation, the second defines the number of simulation cycles in each repetition of the simulation. \code{numeric vector} with length 2.}
 }
@@ -30,11 +27,11 @@ A \code{prosper} object. SimData as a \code{data.table} with the repetition in t
 In the first simulation cycle the object \code{sim_result} of the class \code{prosper} is created and the first cycle results are saved. This object is the same for all cycles in all repetitions and gets all the results. The function can only be called once per simulation run.
 }
 \examples{
-struc_preparation(Rmx=10, n_loci=2, epis=0, dom=c(1,0.3))
+struc_preparation2(Rmx=10, af=c(2,1), epis=0, dom=c(1,0.3))
 dfgenotype$"SB_autumn" <- c(4,23,0,123,53,98,45,3245,234)
 dfgenotype$"SB_autumn_end" <- c(0,2,0,123,434,5234,5678,123,2)
 #creation of an example object with data of the first year
-struc_saveSimData(rep_counter=1, simcycle=1, loci=2, simstruc=c(5, 10), 
+struc_saveSimData(rep_counter=1, simcycle=1, simstruc=c(5, 10), 
                                  start_name="SB_autumn", end_name="SB_autumn_end")
 #creating some fictional population stages
 dfgenotype$"SB_autumn" <- c(1,1,1,1,0,0,0,0,4)
@@ -42,7 +39,7 @@ dfgenotype$"SB_autumn_end" <- c(67,67,67,67,67,67,67,67,67)
 #appending rows with the new results to the first results. necessary columns are inserted.
 struc_saveSimData( rep_counter=1, simcycle=2,
                      start_name="SB_autumn", end_name="SB_autumn_end",
-                      loci=n_loci, simstruc=c(repetitions, duration)) 
+                      simstruc=c(repetitions, duration)) 
 sim_result                               
 rm(sim_result, dfgenotype, mf, xprobab)                               
 }

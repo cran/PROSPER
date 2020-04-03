@@ -36,7 +36,7 @@ setClass(Class = "prosper",
             if( any(!is.numeric(object@simData[[1]]) | !is.numeric(object@simData[[2]])))
                 warning("The first 2 columns of simData must be numeric")                                
             if( !is.character(object@simData[[3]])){
-                warning("The genotype column of simData must be character and is coerced to it")
+                #warning("The genotype column of simData must be character and is coerced to it.")
                 object@simData[[3]] <- as.character(object@simData[[3]])
                 set(object@simData, j=4L, value=as.character(object@simData[[3]]))
                 } 
@@ -62,7 +62,7 @@ setClass(Class = "prosper",
 
 #' @examples \donttest{
 #' require(data.table)
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=c(1,0.3))
+#' struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=c(1,0.3))
 #' simdata <- as.data.table(dfgenotype)
 #'    simdata[,"repetition":=1]
 #'    simdata[,"simcycle":=1]
@@ -77,8 +77,7 @@ setClass(Class = "prosper",
 #' @return An object of class "prosper".                     
 
 
-prosper <- function(Call=match.call(definition = sys.function(sys.parent(n=2)), call = sys.call(sys.parent(n=2))), simstruc=numeric(), loci=numeric(), simData=data.table()) {
-print("1test")
+prosper <- function(Call=match.call(definition = sys.function(sys.parent(n=2)), call = sys.call(sys.parent(n=2))), simstruc=numeric(), loci=numeric(), simData=as.data.table()) {
            methods::new("prosper", 
            Call=Call, 
            simstruc = simstruc, loci=loci, simData=simData)
@@ -95,7 +94,7 @@ print("1test")
 #' @return a \code{data.table} object 
 #' @examples
 #' library(data.table)
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=c(1,0.3))
+#' struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=c(1,0.3))
 #'    #simdata[,"repetition":=1]
 #'    #simdata[,"simcycle":=1]
 #'    #setcolorder(simdata, c(c("repetition", "simcycle"),
@@ -184,12 +183,11 @@ setMethod( "show",
            "prosper",
            function( object){
             cat("This is an object of class prosper.\n\n")
-            cat("\n")
             cat("The complete PROSPER simulation model Call:\n\n")
             print(object@Call)                                                                                            
             cat("\n\n\n")
             cat("The simulated data:\n\n")
-            print(object@simData)
+            print(as.data.table(object@simData))       
            }
           )
           

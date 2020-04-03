@@ -23,7 +23,7 @@
 #' The weed density \code{dw} is calculated for each squaremeter derived from the current simulation run (\code{start}). The used parameters values apply to wheat and ryegrass (Pannell et al. 2004, cited in Renton et al. 2011).
 
 #' @examples 
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+#' struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=1)
 #' #Distribute 10000 individuals of the starting population across the genotypes provided by tmp. 
 #' #The two gene loci have initial frequencies of 0.01 and 0.8.
 #' gen_freq(af=c(0.01,0.8), n_seeds=10000, max_vec_length=1e+07)

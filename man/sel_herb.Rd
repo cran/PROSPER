@@ -4,8 +4,7 @@
 \alias{sel_herb}
 \title{Surviving the herbicide}
 \usage{
-sel_herb(start, result, thresh, sdrate, rate, put,
-  max_vec_length = 1e+07)
+sel_herb(start, result, thresh, sdrate, rate, put, max_vec_length = 1e+07)
 }
 \arguments{
 \item{start}{column names of parental cohorts. \code{character vector}.}
@@ -26,10 +25,10 @@ sel_herb(start, result, thresh, sdrate, rate, put,
 \code{sel_herb} calculates the surviving number of each genotype. \code{sel_herb} selects for resistant individuals.
 }
 \details{
-For every genotype \code{\link{intern_herbicide}} is called.
+For every genotype \code{\link{intern_herbicide}} is called. If no genetics are included, the value from \code{start} is returned in \code{result}.
 }
 \examples{
-struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+struc_preparation2(Rmx=10, af=c(0.02,0.01), epis=0, dom=1)
 gen_freq( af=c(0.01,0.8), n_seeds=10000)
 sel_herb(start="initialSB", result="winter", 
                        thresh=20, sdrate=0.4, rate=100, put=0.04)

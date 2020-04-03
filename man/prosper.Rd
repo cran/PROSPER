@@ -4,9 +4,13 @@
 \alias{prosper}
 \title{Creation of a PROSPER object}
 \usage{
-prosper(Call = match.call(definition = sys.function(sys.parent(n = 2)),
-  call = sys.call(sys.parent(n = 2))), simstruc = numeric(),
-  loci = numeric(), simData = data.table())
+prosper(
+  Call = match.call(definition = sys.function(sys.parent(n = 2)), call =
+    sys.call(sys.parent(n = 2))),
+  simstruc = numeric(),
+  loci = numeric(),
+  simData = as.data.table()
+)
 }
 \arguments{
 \item{Call}{\code{character}, the model call of the simulation.}
@@ -29,7 +33,7 @@ The genotypes are described by their relevant loci (up to 4). Each locus can hav
 \examples{
 \donttest{
 require(data.table)
-struc_preparation(Rmx=10, n_loci=2, epis=0, dom=c(1,0.3))
+struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=c(1,0.3))
 simdata <- as.data.table(dfgenotype)
    simdata[,"repetition":=1]
    simdata[,"simcycle":=1]

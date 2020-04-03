@@ -19,7 +19,7 @@
 #' @return A new column is added to \code{dfgenotype} containing the surviving individuals of the different genotypes.
 
 #' @examples
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+#' struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=1)
 #' gen_freq(af=c(0.01,0.8), n_seeds=10000)
 #' #How many individuals of each genotype will reach the next growth stage?
 #' pop_step(start="initialSB",  stepname="survivingthewinter",
@@ -30,21 +30,48 @@ function(start, start_comb = NA, result = NA, stepname = NA, surv_prob, max_vec_
 cat("pop_step starts...")
 if(is.na(result) & is.na(stepname)){warning("In pop_step() either result or stepname should be given.")}
 if(is.na(result)){result <- paste("surv_",stepname,sep="")}         # standard name
+if(is.na(surv_prob)) {stop("You got surv_prob=NA in pop_step. Simulation not possible.")}
+if(anyNA(start)) {stop("pop_step: start has to be assigned.")}
+
 
 dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
-
+if(!all(start %in% names(dfgenotype))) {stop("pop_step: start has to be a column name of dfgenotype.")}
+#cat("\n the dfgenotype at the start of pop_step \n")
 
 ### --- name flexibel
-first_amount <- data.frame(matrix(nrow=nrow(dfgenotype),ncol=length(start)))
+
+first_amount <- data.frame(matrix(nrow=nrow(dfgenotype),ncol=length(start)), stringsAsFactors = TRUE)
+#print(paste("first_am 1__", first_amount))
 names(first_amount) <- start
+
 second_amount <- rep(0,nrow(dfgenotype))                                          #returning amounts of GT
+#cat("\n the dfgenotype at the END of pop_step \n")
 
 for(cohort in seq_along(start)){ 
- first_amount[cohort] <- eval(parse(text=paste("dfgenotype$",start[cohort],sep="")))   #the amount that gives the start
+ first_amount[cohort] <- dfgenotype[[start[cohort]]]   #the amount that gives the start
+
 }#END for(cohort)
+print(paste("first_am 2__", first_amount))
+
+#print(paste("first_am 2__start", dfgenotype))
+#print(paste("first_am 2__start", "dfgenotype$",start[cohort]))
+#print(start)
+
+
+
+print(cohort)
+
+
+#first_amount <- ifelse(cohort>1,rowSums(first_amount),sum(first_amount))
+
+#first_amount <- ifelse(cohort>1,rowSums(first_amount),first_amount)
 first_amount <- rowSums(first_amount)
-if(length(start)>1 & !is.na(start_comb)){
-                   eval(parse(text=paste("dfgenotype$",start_comb,"<-first_amount",sep="")))                
+print(paste("first_am 3__", first_amount))
+
+
+
+if(length(start)>1 & !anyNA(start_comb)){              
+                   dfgenotype[[start_comb]]<-first_amount
                    }#END if(length(start))
 
 for(pres_GT in which(first_amount > 0)){
@@ -53,11 +80,13 @@ for(pres_GT in which(first_amount > 0)){
     for(i in seq(len=i1)){
       second_amount[pres_GT] <- second_amount[pres_GT] + rbinom(1, max_vec_length, prob = surv_prob)
     }#END for(i)
-  second_amount[pres_GT] <- second_amount[pres_GT] + rbinom(1, i2, prob = surv_prob)   #sum up all surviving weeds
+    #print(paste("pop_step, rbinom surv_prob", surv_prob))
+  second_amount[pres_GT] <- second_amount[pres_GT] + rbinom(1, as.integer(i2), prob = surv_prob)   #sum up all surviving weeds
 }#END for(j)
 
 
-eval(parse(text=paste("dfgenotype$",result,"<-","second_amount",sep="")))  
+#eval(parse(text=paste("dfgenotype$",result,"<-","second_amount",sep="")))
+dfgenotype[[result]] <- second_amount  
 assign("dfgenotype", value=dfgenotype, pos = -1, envir=parent.frame(n = 1)) 
 cat("finished!\n")
 return(dfgenotype)

@@ -10,7 +10,7 @@
 #' @template put
 #' @template thresh
 
-#' @details \code{intern_herbicide} is used in \code{\link{sel_herb}}. Firstly, it calculates the number of weeds that are untouched by the herbicide by chance (probability=\code{put}). In the second step, the herbicid rate that reached an individual is compared with the resistance value (calculated after Renton et al. 2011, \code{\link{sel_resist}}). If the resistance value is lower than the dose, the weed dies. All surviving weeds are summed up.
+#' @details \code{intern_herbicide} is used in \code{\link{sel_herb}}. Firstly, it calculates the number of weeds that are untouched by the herbicide by chance (probability=\code{put}). In the second step, the herbicide rate that reached an individual is compared with the resistance value (calculated after Renton et al. 2011, \code{\link{sel_resist}}). If the resistance value is lower than the dose, the weed dies. All surviving weeds are summed up.
 
 #' @return The number of weeds surviving the herbicide.
 

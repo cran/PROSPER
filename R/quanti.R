@@ -8,7 +8,7 @@
 # @param param.weed   data with population dynamic model parameters. \code{data.frame}.
 #' @template crop     
 #' @param proportion   \code{logical}, \code{TRUE} when the output should be a proportion, otherwise it will be an absolute number.
-#' @param res_max      output maximum. \code{numeric}.
+#' @param res_max      output maximum, ignored when \code{origin=NA}. \code{numeric}.
 #' @param res_min      output minimum. \code{numeric}. 
 #' @param equal_dis    \code{logical}, \code{TRUE} when the distribution of the weeds is spatially uniform across the \code{area}.
 #' @param formul       \code{character}. See details.
@@ -44,6 +44,8 @@ function(origin=NA, step_name, crop, proportion=TRUE, equal_dis=TRUE, res_max=NA
 param.weed <- get0("param.weed", envir = parent.frame(n = 1)) 
 dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1)) 
 
+      
+      
       #----- checks for origin                
       if(!is.na(origin) & !(is.numeric(origin) | is.character(origin))) stop("quanti(): origin must be numeric or character.")
       if(!is.na(origin)){
@@ -53,11 +55,24 @@ dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
             warning("quanti(): origin has length > 1. Only the first element is used.")}
             
             if(origin %in% names(dfgenotype))
-            {eval(parse(text=paste("origin <- sum(dfgenotype$", origin,")", sep="")))
+            {
+            
+            #tmp <- dfgenotype[[origin]]
+            #print(paste("str_tmp: ", str(tmp), "tmp: ", tmp))
+            #if(length(tmp)>1) {
+            #warning("quanti(): the name of origin is not unique. Only the first element is used.")
+           # tmp1 <- tmp[1]
+            #}
+            #origin <- tmp
+            
+            
+            origin <- sum(dfgenotype[[origin]])
             }else{stop("quanti() the name given as origin is not a column name of dfgenotype")}
       }#END if(is.character)
       if(log_values==TRUE) origin <- log(origin+1)
       }#END if(!is.na)
+
+      
       
       
       #----- checks for param.weed   
@@ -69,13 +84,14 @@ dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
 
       #----- check for restrictions
       res_max <- ifelse(proportion==TRUE & is.na(res_max), 1, res_max)
+      
       restriction_yes_no <- !is.na(res_max)|!is.na(res_min)
       crop_pos <- which(names(param.weed)=="crop")
       variable_pos <- which(names(param.weed)=="step")
       if(!any(param.weed[variable_pos]==step_name)) stop("The step_name passed to quanti() is not part of param.weed.")
       if(!any(param.weed[crop_pos]==crop)) stop("The crop passed to quanti() is not part of param.weed.")      
       parameters_all <- param.weed[(param.weed[crop_pos]==crop & param.weed[variable_pos]==step_name),]
-
+      
 ###-----------------------------------------------------------------------------
 # other model dependent variables such as "year" can be passed by "addit_variables".
 
@@ -84,11 +100,17 @@ dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
                varsnames <- names(varslist)
                eval(parse(text=paste(varsnames, "<-", varslist,";")))            #this assigns all the "addit_variables"
       }#END if(addit_variables)
-
+      
 ###-----------------------------------------------------------------------------
 ###--- assumptions, shortcuts...
       if(is.na(origin)){               #if no origin is used, the estimate as returned as fixed value.
-                        return(ifelse(!is.na(step_name),parameters_all$estimate,"no parameters"))
+                        if(log_values==TRUE){
+                                             res <- ifelse(back_log==TRUE, parameters_all$estimate, (exp(parameters_all$estimate)-1))
+                                             }
+                        if(log_values==FALSE){
+                                             res <- ifelse(back_log==TRUE, log(parameters_all$estimate+1), parameters_all$estimate)
+                                             }
+                        return(ifelse(!is.na(step_name), res, "no parameters"))
                         }
       if(origin==0){return(0)}                   #since there is no death/production/growth without any starting level, 0 will return
 
@@ -137,7 +159,13 @@ if(is.na(formul)){#if no formul is named, the model from param.weed is taken. if
                        }
 if(is.na(formul)){               #if no formula or model is used, the mean as returned as fixed value.
                         if(is.na(parameters$estimate)) stop("Function quanti() produced NA result.")
-                        return(parameters$estimate)
+                        if(log_values==TRUE){
+                                             res <- ifelse(back_log==TRUE, parameters_all$estimate, (exp(parameters_all$estimate)-1))
+                                             }
+                        if(log_values==FALSE){
+                                             res <- ifelse(back_log==TRUE, log(parameters_all$estimate+1), parameters_all$estimate)
+                                             }
+                        return(res)
                         }      
 
 ### -- all variables are calculated --------------------------------------------            
@@ -192,7 +220,13 @@ if(is.na(formul)){#if no formul is named, the model from param.weed is taken. if
                        }
 if(is.na(formul)){               #if no formula or model is used, the mean as returned as fixed value.
                         if(is.na(parameters$estimate)) stop("Function quanti() produced NA result.")
-                        return(parameters$estimate)
+                        if(log_values==TRUE){
+                                             res <- ifelse(back_log==TRUE, parameters_all$estimate, (exp(parameters_all$estimate)-1))
+                                             }
+                        if(log_values==FALSE){
+                                             res <- ifelse(back_log==TRUE, log(parameters_all$estimate+1), parameters_all$estimate)
+                                             }
+                        return(res)
                         }      
 
 ### -- all variables are calculated --------------------------------------------            

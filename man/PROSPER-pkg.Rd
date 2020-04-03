@@ -3,7 +3,6 @@
 \docType{package}
 \name{PROSPER-pkg}
 \alias{PROSPER-pkg}
-\alias{PROSPER-pkg-package}
 \title{PROSPER-pkg}
 \source{
 Renton, M.; Diggle, A.; Manalil, S. & Powles, S. (2011): Does cutting herbicide rates threaten the sustainability of weed management in cropping systems? Journal of Theoretical Biology, 283, 14-27.

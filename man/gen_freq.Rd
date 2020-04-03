@@ -22,16 +22,16 @@ Returns a \code{data.frame} containing the genotypes and their frequencies provi
 \code{gen_freq} generates the numbers of genotypes at the beginning of the first simulated year.
 }
 \details{
-The start values for a model include the initial frequencies of alleles and the initial seedbank, i.e. the number of seeds in the soil. \code{gen_freq} allocates the \code{n_seeds} individuals to the different genotypes as provided by \code{dfgenotype}, which is created by \code{struc_preparation()}.
+The start values for a model include the initial frequencies of alleles and the initial seedbank, i.e. the number of seeds in the soil. \code{gen_freq} allocates the \code{n_seeds} individuals to the different genotypes as provided by \code{dfgenotype}, which is created by \code{struc_preparation2()}. If \code{af == NULL} the function gives all seed to the only "genotype".
 }
 \examples{
 # generate a 'dfgenotype' data.frame:
-struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=1)
 #Distribute 10000 individuals of the starting population across the genotypes. 
 #The two gene loci have initial frequencies of 0.01 and 0.8.
 gen_freq(af=c(0.01,0.8), n_seeds=10000)
 rm(dfgenotype, mf, xprobab)
 }
 \seealso{
-\code{\link{sel_resist}} \code{\link{struc_preparation}}
+\code{\link{sel_resist}} \code{\link{struc_preparation2}}
 }

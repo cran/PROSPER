@@ -18,9 +18,9 @@ struc_endSim <- function (simcycle=year, break_col_name="SB_autumn") {
 cat("The simulation cycle ended.\n")
 dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
 duration <- get0("duration", envir = parent.frame(n = 1))
-break_sim <- FALSE
-if(simcycle == duration){break_sim <- TRUE}
-beak_col_sum <- eval(parse(text=paste("sum(dfgenotype$",break_col_name,")",sep="")))
+ifelse(simcycle == duration, break_sim <- TRUE, break_sim <- FALSE)
+#beak_col_sum <- eval(parse(text=paste("sum(dfgenotype$",break_col_name,")",sep="")))
+beak_col_sum <- sum(dfgenotype[[break_col_name]]) 
 if(beak_col_sum == 0) {break_sim <- TRUE}
 
 ifelse(break_sim==TRUE,return(TRUE),return(FALSE))

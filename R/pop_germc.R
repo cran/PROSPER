@@ -15,7 +15,7 @@
 #' @return Columns are added to \code{dfgenotype}: "germ_dorm" contains the numbers of each genotype that remain dormant, "germ1" to "germX" contain the numbers for each of X cohorts.
 
 #' @examples 
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+#' struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=1)
 #' ls()
 #' gen_freq( af=c(0.01,0.8), n_seeds=10000)
 

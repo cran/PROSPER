@@ -19,8 +19,9 @@
 #' @section warning: newseeds are always coerced to a whole number.
 
 #' @examples 
+#'\dontrun{
 #' # generate a 'dfgenotype' data.frame:
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+#' struc_preparation2(Rmx=10, af=c(0.01, 0.2), epis=0, dom=1)
 #' #Distribute 10000 individuals of the starting population across the genotypes. 
 #' #The two gene loci have initial frequencies of 0.01 and 0.8.
 #' gen_freq(af=c(0.01,0.8), n_seeds=10000)
@@ -28,7 +29,14 @@
 #' #therefore defines the genetics of the new seeds
 #' newseeds <- 10000
 #' gen_diploid(start="initialSB", result="followingSB")
+#' # If a second cohort is reprodusing in the same time
+#'gen_diploid(start=c("initialSB", "followingSB"), 
+#'                   start_comb="two_cohorts_combind", result="followingSB2")
 #' rm(dfgenotype, mf, newseeds, xprobab)
+#'}
+
+
+
 
 
 
@@ -36,42 +44,58 @@ gen_diploid <-
 function(start, start_comb=NA, result, newseeds=get0("newseeds", envir = parent.frame(n = 1)), max_vec_length=1e+07){
 cat("gen_diploid starts...")
 
+if(is.na(newseeds)) {stop("newseeds must be given")}
+
+dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
+###------- if no genetics are included --------
+loci <- get0("n_loci", envir = parent.frame(n = 1))
+
+if(loci==0){
+            dfgenotype[[result]] <- newseeds
+            assign("dfgenotype", value=dfgenotype, pos = -1, envir = parent.frame(n = 1))   
+            cat(" finished!\n")
+            invisible(dfgenotype)
+            }
+            
+###------- start of the main function --------
 mf <- get0("mf", envir = parent.frame(n = 1))
 xprobab <- get0("xprobab", envir = parent.frame(n = 1))
-dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
 
-if(!is.character(start)) stop("gen_diploid: start must be of type character.")
-
-if(is.null(mf)){
-                cat("No genetics!\nNo recombination!\n")
-                eval(parse(text=paste("dfgenotype$",result,"<-", newseeds,sep="")))
-                assign("dfgenotype", value=dfgenotype, pos = -1, envir=environment(gen_diploid))    
-                return(dfgenotype)}
+#if(!is.character(start)) stop("gen_diploid: start must be of type character.")
+if(typeof(start)!="character") stop("gen_diploid: start must be of type character.")
 
 if(newseeds != round(newseeds,digits=0)){
                                 newseeds <- round(newseeds, digits=0)}
 
 nrows <- nrow(dfgenotype)
- first_amount <- data.frame(matrix(nrow=nrows,ncol=length(start)))
+ first_amount <- data.frame(matrix(nrow=nrows,ncol=length(start)), stringsAsFactors = TRUE)
  names(first_amount) <- start
  
  gt_seeds <- rep(0,nrows)
-for(cohort in seq_along(start)){ 
- first_amount[cohort] <- eval(parse(text=paste("dfgenotype$",start[cohort],sep="")))   #the amount that gives the start for each cohort
+for(cohort in seq_along(start)){   
+ first_amount[cohort] <- dfgenotype[[start[cohort]]]  #the amount that gives the start for each cohort
 }#END for(cohort)
 
 if(length(start)>1){
-                    if(!is.na(start_comb)) {start_comb <- "def_col_name"
+                    if(is.na(start_comb)) {start_comb <- "def_col_name"
                                            warning("gen_diploid: if length(start)>1 'start_comb' should be defined")}
                    eval(parse(text=paste("dfgenotype$",start_comb,"<-rowSums(first_amount)",sep=""))) #the amount that gives the start summed up
+                   #dfgenotype[[start_comb]] <- rowSums(first_amount)
                    }#END if(length(start))
+
+if(is.null(mf)){
+                cat("No genetics!\nNo recombination!\n")
+                dfgenotype[[result]] <- newseeds
+                assign("dfgenotype", value=dfgenotype, pos = -1, envir=parent.frame(n = 1) )  
+                return(dfgenotype)}
 
 
 #-------------------------------------------------------------------------------
 ### Genotypes of new seeds  ----------------------------------------------------
 # - which parents do combine?
-cat(" step 1...")
-eval(parse(text=paste("dfgenotype$",result,"<- 0",sep=""))) 
+cat(" step 1...") 
+dfgenotype[[result]] <- 0
+
 
 if(newseeds > 0){                  #the recombination starts only if seeds were produced
  surv <- rowSums(first_amount)     #all living individuals for each genotype
@@ -104,7 +128,7 @@ if(i1 > 0){
         asum <- asum + a
       }#END for(k)
     }#END for(j)
-    parents <- data.frame(table(paste(sample(rep(dfgenotype$genotype, mother)), sample(rep(dfgenotype$genotype, father)), sep = "")))
+    parents <- data.frame(table(paste(sample(rep(dfgenotype$genotype, mother)), sample(rep(dfgenotype$genotype, father)), sep = "")), stringsAsFactors = TRUE)
     tmp   <- merge(tmp, parents, by.x = "mf", by.y = "Var1", all.x = TRUE)
     tmp[is.na(tmp)] <- 0
     tmp$n <- tmp$n + tmp$Freq
@@ -115,8 +139,8 @@ if(i1 > 0){
 if(i2>0){
 mother <- rep(0, ngt) ;  father <- rep(0, ngt)
 for(j in 1:2){
-  asum <- 0                                                 #collects how many individui are already defined
-  wstop <- max(which(w > 0))                       #stop procedure when the maximum value of w is reached, if more then 1, the latest
+  asum <- 0                                #collects how many individuals are already defined
+  wstop <- max(which(w > 0))               #stop procedure when the maximum value of w is reached, if more then 1, the latest
 
   #for every genotype, which is present
   for(pres in which(w > 0)){
@@ -127,14 +151,13 @@ for(j in 1:2){
         asum <- asum + a
   }#END for(pres)
 }#END for(j)
-parents <- data.frame(table(paste(sample(rep(dfgenotype$genotype, mother)), sample(rep(dfgenotype$genotype, father)), sep = "")))
+parents <- data.frame(table(paste(sample(rep(dfgenotype$genotype, mother)), sample(rep(dfgenotype$genotype, father)), sep = "")), stringsAsFactors = TRUE)
 tmp <- merge(tmp, parents, by.x = "mf", by.y = "Var1", all.x = TRUE)
 tmp[is.na(tmp)] <- 0
 tmp$n <- tmp$n + tmp$Freq
 tmp$Freq <- NULL
 }
 ###-----------------------------------------------------------------------------
-#print("genotypes of seeds, step 2")
 cat(" step 2...")
 #what is the outcome in f1 generation?
 for(pres in which(tmp$n > 0)){                                #only present combinations of parents are used
@@ -169,8 +192,12 @@ for(pres in which(tmp$n > 0)){                                #only present comb
   }
 }#END for(pres)
 }#END if(newseeds>0)
-eval(parse(text=paste("dfgenotype$",result,"<-", data.frame(gt_seeds),sep=""))) 
-cat(" finished!\n")
-assign("dfgenotype", value=dfgenotype, pos = -1, envir=parent.frame(n=1))   
+
+dfgenotype[[result]] <- gt_seeds
+
+
+
+assign("dfgenotype", value=dfgenotype, pos = -1, envir=parent.frame(n=1)) 
+cat(" finished!\n")  
 return(dfgenotype)
 }

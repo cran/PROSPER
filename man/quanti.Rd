@@ -4,9 +4,20 @@
 \alias{quanti}
 \title{Step by step: the model develops driven by field data}
 \usage{
-quanti(origin = NA, step_name, crop, proportion = TRUE,
-  equal_dis = TRUE, res_max = NA, res_min = 0, formul = NA, area,
-  addit_variables = NA, log_values = TRUE, back_log = TRUE)
+quanti(
+  origin = NA,
+  step_name,
+  crop,
+  proportion = TRUE,
+  equal_dis = TRUE,
+  res_max = NA,
+  res_min = 0,
+  formul = NA,
+  area,
+  addit_variables = NA,
+  log_values = TRUE,
+  back_log = TRUE
+)
 }
 \arguments{
 \item{origin}{number or log-number of individuals at the start. \code{numeric}.}
@@ -19,7 +30,7 @@ quanti(origin = NA, step_name, crop, proportion = TRUE,
 
 \item{equal_dis}{\code{logical}, \code{TRUE} when the distribution of the weeds is spatially uniform across the \code{area}.}
 
-\item{res_max}{output maximum. \code{numeric}.}
+\item{res_max}{output maximum, ignored when \code{origin=NA}. \code{numeric}.}
 
 \item{res_min}{output minimum. \code{numeric}.}
 

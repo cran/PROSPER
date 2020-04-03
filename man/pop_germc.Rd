@@ -23,7 +23,7 @@ Columns are added to \code{dfgenotype}: "germ_dorm" contains the numbers of each
 Each individual has a chance to germinate or to stay dormant. In case of germination, it emerges in one of the cohorts. The distribution of individual seeds to cohorts or dormancy is random. The function uses the column \code{initialSB} of the data.frame \code{dfgenotype} as input. The output values are the numbers of seedlings of each genotype and each cohort.
 }
 \examples{
-struc_preparation(Rmx=10, n_loci=2, epis=0, dom=1)
+struc_preparation2(Rmx=10, af=c(0.01,0.8), epis=0, dom=1)
 ls()
 gen_freq( af=c(0.01,0.8), n_seeds=10000)
 #Distribute the individuals to three cohorts with the germination 

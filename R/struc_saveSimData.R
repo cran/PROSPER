@@ -11,7 +11,11 @@
 #' @param start_name name of the column with the first population stage in the simulation. \code{character}.
 #' @param end_name name of the column with the last population stage in the simulation. This is taken as the first stage in the next simulation cycle. \code{character}.
 # @param namestokeep \code{character vector}, the column names of \code{dfgenotype} that are necessary for all simulation cycles and not calculated within each cycle.
-#' @param loci \code{numeric}, the number of loci used in the simulation.
+
+
+# @param loci \code{numeric}, the number of loci used in the simulation.
+
+
 #' @param simstruc  two numbers, the first defines the number of repetitions for the simulation, the second defines the number of simulation cycles in each repetition of the simulation. \code{numeric vector} with length 2.
 
 #' @details In the first simulation cycle the object \code{sim_result} of the class \code{prosper} is created and the first cycle results are saved. This object is the same for all cycles in all repetitions and gets all the results. The function can only be called once per simulation run.
@@ -21,11 +25,16 @@
 #' @importFrom methods is new validObject
 
 #' @examples
-#' struc_preparation(Rmx=10, n_loci=2, epis=0, dom=c(1,0.3))
+# struc_preparation(Rmx=10, n_loci=2, epis=0, dom=c(1,0.3))
+#' struc_preparation2(Rmx=10, af=c(2,1), epis=0, dom=c(1,0.3))
 #' dfgenotype$"SB_autumn" <- c(4,23,0,123,53,98,45,3245,234)
 #' dfgenotype$"SB_autumn_end" <- c(0,2,0,123,434,5234,5678,123,2)
 #' #creation of an example object with data of the first year
-#' struc_saveSimData(rep_counter=1, simcycle=1, loci=2, simstruc=c(5, 10), 
+
+# struc_saveSimData(rep_counter=1, simcycle=1, loci=2, simstruc=c(5, 10), 
+
+
+#' struc_saveSimData(rep_counter=1, simcycle=1, simstruc=c(5, 10), 
 #'                                  start_name="SB_autumn", end_name="SB_autumn_end")
 #' #creating some fictional population stages
 #' dfgenotype$"SB_autumn" <- c(1,1,1,1,0,0,0,0,4)
@@ -34,36 +43,50 @@
 #' #appending rows with the new results to the first results. necessary columns are inserted.
 #' struc_saveSimData( rep_counter=1, simcycle=2,
 #'                      start_name="SB_autumn", end_name="SB_autumn_end",
-#'                       loci=n_loci, simstruc=c(repetitions, duration)) 
+
+
+
+#                       loci=n_loci, simstruc=c(repetitions, duration)) 
+
+
+
+#'                       simstruc=c(repetitions, duration)) 
 #' sim_result                               
 #' rm(sim_result, dfgenotype, mf, xprobab)                               
                                
 struc_saveSimData <-
-function(rep_counter, simcycle, start_name, end_name, loci, simstruc){
+function(rep_counter, simcycle, start_name, end_name, simstruc){
 
 cat("struc_saveSimData starts...")
 dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
+loci <- get0("n_loci", envir = parent.frame(n = 1))
+#print(paste("loci", loci))
 namestokeep =c("genotype", "resist") 
 
 
 if(rep_counter==1 & simcycle==1){
-    simdata <- data.table(dfgenotype)
+    simdata <- as.data.table(dfgenotype)
     simdata[,"repetition":=rep_counter]
     simdata[,"simcycle":=simcycle]
     setcolorder(simdata, c(c("repetition", "simcycle"),colnames(simdata)[!(colnames(simdata) %in% c("simulation_run", "repetition", "simcycle"))])) 
     cat(" step 1a...") 
+        
     simdatob <- prosper(simstruc=simstruc,loci=loci,simData=simdata)
     cat(" step 2a...") 
     assign("sim_result", value=simdatob, pos = -1, envir=parent.frame(n = 1))
 }else{
     cat(" step 1...") 
-    simdata <- data.table(dfgenotype)
+    simdata <- as.data.table(dfgenotype)
     simdata[,"repetition":=rep_counter]
     simdata[,"simcycle":=simcycle]
 
     setcolorder(simdata, c(c("repetition", "simcycle"),colnames(simdata)[!(colnames(simdata) %in% c("repetition", "simcycle"))]))
     simdatob <- get0("sim_result", envir = parent.frame(n = 1))   
     cat(" step 2...") 
+    #str(simdatob)
+    #print(simdatob)
+    #print("#")
+    #print(simdata)
     simdataob_add <- struc_addSimData(object=simdatob, value= simdata, add=TRUE)              
     cat(" step 3...") 
     assign("sim_result", value=simdataob_add, pos = -1, envir=parent.frame(n = 1))
@@ -72,6 +95,7 @@ if(rep_counter==1 & simcycle==1){
 
 nextsim <- dfgenotype[c(namestokeep, end_name)]
 names(nextsim) <- c(namestokeep, start_name)
+
 assign("dfgenotype", value=nextsim, pos = -1, envir=parent.frame(n = 1))
 cat(" step 4...")             
 

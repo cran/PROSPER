@@ -4,7 +4,8 @@
 \name{weed-parameters}
 \alias{weed-parameters}
 \title{Parameterisations for population dynamic models - Examples}
-\format{The provided data are given in tables with 10 columns.
+\format{
+The provided data are given in tables with 10 columns.
 \describe{
 \item{weed}{the weed species.} 
 \item{crop}{the crop for which the parameters apply, \code{character}.}
@@ -16,7 +17,8 @@
 \item{range_low}{a model might have a minimum level of use, then this value can be defined here, \code{numeric}.}
 \item{range_up}{a model might have a maximum level of use, then this value can be defined here, \code{numeric}.}
 \item{source}{if the value is taken from sources not owned by the author they can be named here.}
-}}
+}
+}
 \description{
 PROSPER entails full parameterized models. The parameterisation for these models are described here.
 }
