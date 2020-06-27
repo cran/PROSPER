@@ -20,7 +20,7 @@ quanti(
 )
 }
 \arguments{
-\item{origin}{number or log-number of individuals at the start. \code{numeric}.}
+\item{origin}{numbers or log-numbers of individuals at the start for every genotype. \code{numeric}. Alternatively the columnaes of dfgenotype can be used.}
 
 \item{step_name}{step name in the database containing the model parameters. \code{character}.}
 

@@ -113,7 +113,7 @@ prosper.LOLRI(
 \item{pen_co}{penalty values for different weed cohorts. \code{numeric vector}, each element in [0,1].}
 }
 \description{
-PROSPER entails full parametrized models, which are described here. 
+PROSPER entails full parameterized models, which are described here. 
 Population dynamic models adress different purposes the models differ. The functions \code{prosper.*} present different adaptations.
 
 \code{prosper.ECHCG} provides the setting for a simulation of the population dynamic of \emph{Echinochloa crus-galli}.
@@ -141,11 +141,11 @@ The parameter \code{undersowing} describes the probability of surviving a second
 }}
 
 \examples{
+\dontrun{
 mod_echcg <- prosper.ECHCG(param.weed = param.ECHCG, area=100, af=c(0.001), 
                              undersowing=0.2,dom=0.5,duration=7,repetitions=1)
 
 
-\dontrun{
 #The model call for Redwitz et al. (2015)
 undersowing_prob <- c(1, 0.3, 0) #no undersowing, strong competition, complete dominance
 years <- 20
@@ -164,13 +164,11 @@ simu_collect[[simu]] <- prosper.ECHCG(area          = 100,
                                              )
 }
 }
-\dontrun{   
-data(param.GALAP)
+\donttest{
 mod_galap <- prosper.GALAP(param.weed=param.GALAP, repetitions=2, duration=10) }
-\dontrun{
+\donttest{
 mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=100, 
                                        duration=15, repetitions=3)}
-
 }
 \references{
 Redwitz, C von, Pannwitt H, Gerowitt B (2016): About the interplay of sensitive and resistant biotypes in weed populations - simulation exercises for Echinochloa crus-galli in maize crops. Proceedings - 28th German Conference on Weed Biology and Weed Control, Julius-Kuehn-Archiv, 93-99, 452.

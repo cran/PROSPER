@@ -37,12 +37,11 @@
 
 
 #' @examples 
-# data(param.ECHCG) 
+#' \dontrun{
 #' mod_echcg <- prosper.ECHCG(param.weed = param.ECHCG, area=100, af=c(0.001), 
 #'                              undersowing=0.2,dom=0.5,duration=7,repetitions=1)
 #'
-#'
-#' \dontrun{
+#' 
 #' #The model call for Redwitz et al. (2015)
 #' undersowing_prob <- c(1, 0.3, 0) #no undersowing, strong competition, complete dominance
 #' years <- 20
@@ -87,24 +86,13 @@ function(
 #things that you do only want to do ONCE in your simulation run
 cat("SIMULATION START\n\n")
 
-print(param.weed)
-
 #### --- Controll of the given data ----
 crop.list <- NA # not ideal
 mod_check(param.weed=param.weed, area=area, duration=duration, repetitions=repetitions, crop_list=crop_list, max_vec_length=max_vec_length)
 
-#if(anyNA(af)){af <- NULL}
-#n_loci <- length(af)
-#if(length(dom)<=n_loci) dom <- rep(dom[1],n_loci)
-
-#ngt     <- 3^n_loci                        #number of possible GT
-
-#gen_check(af=af, dom=dom)
 
 #- generating necessary objects: dfgenotype, mf, xprobab -----------------------
-#struc_preparation(Rmx=Rmx, n_loci=n_loci, epis=epis, dom=dom)                                              
 struc_preparation2(Rmx=Rmx, af=af, epis=epis, dom=dom)                                              
-#crop.list <- rep(crop_list,ceiling(duration/length(crop_list)))[1:duration] #setting for crop rotation
 
 cat("---------------------------------------------\n\n\n")
 cat("---------------------------------------------\n\n")
@@ -173,7 +161,7 @@ gen_diploid(start=c("surv02", "surv12"), start_comb="weedatharvest",
 ###--- surviving seed that did not germinate -----------------------------------
 #thats another branch in the germination tree
 prob_surv_summer <- quanti(step_name="seed_surv_summer", crop=crop) 
-pop_step(start="germ_dorm", result="SB_summer", surv_prob=prob_surv_summer)
+pop_step(start="dorm1", result="SB_summer", surv_prob=prob_surv_summer)
 
 ### Seed_predation -------------------------------------------------------------
 seeds_pred <- quanti(step_name="seed_pred", crop=crop) 
@@ -188,8 +176,7 @@ pop_step(start=c("SB_summer", "new_seeds"), result="SB_autumn_end", surv_prob=1)
 # the result is saved in "sim_res", a new year starts
 # "dfgenotype" is cleaned up and prepared for the next cycle
 struc_saveSimData(rep_counter=rep_counter, simcycle=year,
-                               start_name="SB_autumn", end_name="SB_autumn_end",
-                               #loci=n_loci, 
+                               start_names="SB_autumn", end_names="SB_autumn_end",
                                simstruc=c(repetitions, duration))
 
 #-------------------------------------------------------------------------------

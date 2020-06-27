@@ -4,16 +4,16 @@
 \alias{struc_saveSimData}
 \title{Saving simulation data}
 \usage{
-struc_saveSimData(rep_counter, simcycle, start_name, end_name, simstruc)
+struc_saveSimData(rep_counter, simcycle, start_names, end_names, simstruc)
 }
 \arguments{
 \item{rep_counter}{number of the current repetition. \code{integer}.}
 
 \item{simcycle}{number of the current simulation cycle. \code{integer}.}
 
-\item{start_name}{name of the column with the first population stage in the simulation. \code{character}.}
+\item{start_names}{names of the columns with the first population stage in the simulation. \code{character}.}
 
-\item{end_name}{name of the column with the last population stage in the simulation. This is taken as the first stage in the next simulation cycle. \code{character}.}
+\item{end_names}{names of the columns with the last population stage in the simulation. These are taken as the first stage in the next simulation cycle. \code{character}.}
 
 \item{simstruc}{two numbers, the first defines the number of repetitions for the simulation, the second defines the number of simulation cycles in each repetition of the simulation. \code{numeric vector} with length 2.}
 }
@@ -32,17 +32,17 @@ dfgenotype$"SB_autumn" <- c(4,23,0,123,53,98,45,3245,234)
 dfgenotype$"SB_autumn_end" <- c(0,2,0,123,434,5234,5678,123,2)
 #creation of an example object with data of the first year
 struc_saveSimData(rep_counter=1, simcycle=1, simstruc=c(5, 10), 
-                                 start_name="SB_autumn", end_name="SB_autumn_end")
+                                 start_names="SB_autumn", end_names="SB_autumn_end")
 #creating some fictional population stages
 dfgenotype$"SB_autumn" <- c(1,1,1,1,0,0,0,0,4)
 dfgenotype$"SB_autumn_end" <- c(67,67,67,67,67,67,67,67,67)
 #appending rows with the new results to the first results. necessary columns are inserted.
 struc_saveSimData( rep_counter=1, simcycle=2,
-                     start_name="SB_autumn", end_name="SB_autumn_end",
+                     start_names="SB_autumn", end_names="SB_autumn_end",
                       simstruc=c(repetitions, duration)) 
 sim_result                               
 rm(sim_result, dfgenotype, mf, xprobab)                               
 }
 \seealso{
-\code{\link{struc_nextCycle}} \code{\link{struc_endSim}}
+\code{\link{struc_endSim}}
 }

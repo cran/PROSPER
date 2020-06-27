@@ -27,8 +27,8 @@ For the genetic part,  means and standard deviations of proportions of individua
 }
 \examples{
 data(param.LOLRI)
-mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=100, 
-                                       duration=7, repetitions=2)
+mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=30, af = c(0.005, 0.01),
+                                       duration=3, repetitions=2)
 summary(mod_lolri)
 }
 \seealso{

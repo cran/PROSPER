@@ -4,12 +4,12 @@
 \alias{struc_endSim}
 \title{Check for some stop conditions.}
 \usage{
-struc_endSim(simcycle = year, break_col_name = "SB_autumn")
+struc_endSim(simcycle = year, break_col_names = "SB_autumn")
 }
 \arguments{
 \item{simcycle}{The count of simulation runs. The  value is \code{duration} \eqn{\ge  0}.}
 
-\item{break_col_name}{The name of the column in \code{dfgenotype}, which is the first in the next simulation cycle.}
+\item{break_col_names}{The names of the columns in \code{dfgenotype}, which are the first in the next simulation cycle.}
 }
 \value{
 \code{logical} TRUE if the simulation has to stop.
@@ -21,5 +21,5 @@ Conditions that are necessary to continue the simulation are checked.
 This function combines two conditions to terminate the simulation. The first is the \code{duration} that is defined for the simulation. The second is the the number of individuals for the next simulation cycle: when the population is extinct the simulation ends.
 }
 \seealso{
-\code{\link{struc_nextCycle}} \code{\link{struc_saveSimData}}
+\code{\link{struc_saveSimData}}
 }

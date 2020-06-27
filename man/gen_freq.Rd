@@ -4,14 +4,22 @@
 \alias{gen_freq}
 \title{generating the start values for PROSPER models}
 \usage{
-gen_freq(af, n_seeds, result = "initialSB", max_vec_length = 1e+07)
+gen_freq(
+  af,
+  n_seeds,
+  result = "initialSB",
+  distribution = NA,
+  max_vec_length = 1e+07
+)
 }
 \arguments{
 \item{af}{initial frequency of resistance alleles in the population. \code{numeric vector} with length of \code{ng} (number of genes) and elements in [0,1].}
 
 \item{n_seeds}{initial number of weed seeds. They will be allocated to the genotypes. \code{integer}.}
 
-\item{result}{name of the results column. \code{character}.}
+\item{result}{names of the results columns. \code{character}.}
+
+\item{distribution}{defines the proportion with \code{n_seeds} is distributed among multiple cloumns, if result defines multiple columns. Has to be of the same length as \code{result}. \code{numeric} between 0 and 1 or "equal". See details.}
 
 \item{max_vec_length}{used internally, a technical term, defining the maximum length of vectors to be used.}
 }
@@ -22,7 +30,8 @@ Returns a \code{data.frame} containing the genotypes and their frequencies provi
 \code{gen_freq} generates the numbers of genotypes at the beginning of the first simulated year.
 }
 \details{
-The start values for a model include the initial frequencies of alleles and the initial seedbank, i.e. the number of seeds in the soil. \code{gen_freq} allocates the \code{n_seeds} individuals to the different genotypes as provided by \code{dfgenotype}, which is created by \code{struc_preparation2()}. If \code{af == NULL} the function gives all seed to the only "genotype".
+The start values for a model include the initial frequencies of alleles and the initial seedbank, i.e. the number of seeds in the soil. \code{gen_freq} allocates the \code{n_seeds} individuals to the different genotypes as provided by \code{dfgenotype}, which is created by \code{struc_preparation2()}. If \code{af == NULL} the function gives all seed to the only "genotype". The distribution can be splitted to multiple cohorts using \code{distribution}. 
+If \code{distribution} is "equal", n_seeds are distributed equaly amoung the cohorts defindes with \code{result}.
 }
 \examples{
 # generate a 'dfgenotype' data.frame:

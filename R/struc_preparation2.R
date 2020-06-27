@@ -43,7 +43,7 @@ cat("struc_preparation starts...")
 
 n_loci <- NA #not ideal
 tmp_param <- c(Rmx, af, epis, dom)
-if(anyNA(tmp_param) & !all(is.na(tmp_param))) {stop("struc_preparation: you need to define all genetic parameters if you want to use them.")}
+if(anyNA(tmp_param) & !all(is.na(tmp_param))) {stop("struc_preparation2: you need to define all genetic parameters if you want to use them.")}
 if(!anyNA(tmp_param)) {
                       gen_check(Rmx=Rmx ,af=af, epis=epis, dom=dom)
                       assign("n_loci", n_loci, pos = -1, envir=parent.frame(n = 1))                

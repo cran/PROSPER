@@ -17,8 +17,8 @@ gen_check(Rmx, af, dom, epis)
 \item{epis}{epistasis value, describing the interaction between resistance alleles. \code{numeric}. \code{epis} = 0: no interaction i.e. additive effects of resistance alleles, \code{epis} < 0: effect of resistance alleles is smaller than additive, \code{epis} > 0: effect of resistance alleles is higher than additive.}
 }
 \description{
-Before calling \code{struc_preparation} it is necessary to bring the geneticts into the correct form, which is mainly the correct dimensions.
+Before calling \code{struc_preparation} it is necessary to bring the genetics into the correct form, which is mainly the correct dimensions.
 }
 \details{
-If no genetics are required \code{af} has to be set to \code{NA}. The value of \code{dom} is adjusted to the length of \code{af}. If there are missmatches, the \code{dom} is cut or the first given value is repeated to fit the number of given alleles in \code{af}. The variables af and \code{dom} are corrected and \code{n_loci} is created, which is 0 when no genetics is included. If no value is given to \code{epis} it is set to 0.
+If no genetics are required \code{af} has to be set to \code{NA}. The value of \code{dom} is adjusted to the length of \code{af}. If there are mismatches, the \code{dom} is cut or the first given value is repeated to fit the number of given alleles in \code{af}. The variables af and \code{dom} are corrected and \code{n_loci} is created, which is 0 when no genetics is included. If no value is given to \code{epis} it is set to 0.
 }

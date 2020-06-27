@@ -21,7 +21,7 @@ This function draws three figures. i)Numerics: mean number of individual plants 
 }
 \examples{
 data(param.LOLRI)
-mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=50, 
+mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=20,  af = c(0.005, 0.01),
                                        duration=3, repetitions=2)
 plot(mod_lolri)
 }

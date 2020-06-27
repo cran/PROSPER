@@ -26,7 +26,7 @@ The number of weeds surviving the herbicide.
 Utility function internally used. It's used only by \code{sel_herb}, and usually there is no reason to change it. Calculates the surviving number of weeds according to the specific genotype.
 }
 \details{
-\code{intern_herbicide} is used in \code{\link{sel_herb}}. Firstly, it calculates the number of weeds that are untouched by the herbicide by chance (probability=\code{put}). In the second step, the herbicid rate that reached an individual is compared with the resistance value (calculated after Renton et al. 2011, \code{\link{sel_resist}}). If the resistance value is lower than the dose, the weed dies. All surviving weeds are summed up.
+\code{intern_herbicide} is used in \code{\link{sel_herb}}. Firstly, it calculates the number of weeds that are untouched by the herbicide by chance (probability=\code{put}). In the second step, the herbicide rate that reached an individual is compared with the resistance value (calculated after Renton et al. 2011, \code{\link{sel_resist}}). If the resistance value is lower than the dose, the weed dies. All surviving weeds are summed up.
 }
 \examples{
 #How many of 1000 weeds of a genotype with resistance value 5.5 survive a herbicide application 

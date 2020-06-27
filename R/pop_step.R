@@ -38,37 +38,17 @@ dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
 if(!all(start %in% names(dfgenotype))) {stop("pop_step: start has to be a column name of dfgenotype.")}
 #cat("\n the dfgenotype at the start of pop_step \n")
 
-### --- name flexibel
-
+### --- name flexibel ---------
 first_amount <- data.frame(matrix(nrow=nrow(dfgenotype),ncol=length(start)), stringsAsFactors = TRUE)
-#print(paste("first_am 1__", first_amount))
 names(first_amount) <- start
-
 second_amount <- rep(0,nrow(dfgenotype))                                          #returning amounts of GT
+
 #cat("\n the dfgenotype at the END of pop_step \n")
 
 for(cohort in seq_along(start)){ 
  first_amount[cohort] <- dfgenotype[[start[cohort]]]   #the amount that gives the start
-
 }#END for(cohort)
-print(paste("first_am 2__", first_amount))
-
-#print(paste("first_am 2__start", dfgenotype))
-#print(paste("first_am 2__start", "dfgenotype$",start[cohort]))
-#print(start)
-
-
-
-print(cohort)
-
-
-#first_amount <- ifelse(cohort>1,rowSums(first_amount),sum(first_amount))
-
-#first_amount <- ifelse(cohort>1,rowSums(first_amount),first_amount)
 first_amount <- rowSums(first_amount)
-print(paste("first_am 3__", first_amount))
-
-
 
 if(length(start)>1 & !anyNA(start_comb)){              
                    dfgenotype[[start_comb]]<-first_amount
@@ -80,14 +60,18 @@ for(pres_GT in which(first_amount > 0)){
     for(i in seq(len=i1)){
       second_amount[pres_GT] <- second_amount[pres_GT] + rbinom(1, max_vec_length, prob = surv_prob)
     }#END for(i)
-    #print(paste("pop_step, rbinom surv_prob", surv_prob))
   second_amount[pres_GT] <- second_amount[pres_GT] + rbinom(1, as.integer(i2), prob = surv_prob)   #sum up all surviving weeds
 }#END for(j)
 
 
-#eval(parse(text=paste("dfgenotype$",result,"<-","second_amount",sep="")))
-dfgenotype[[result]] <- second_amount  
+if(is.null(dfgenotype[[result]])){
+  dfgenotype[[result]] <- second_amount  
+}else{
+  cat("\n ...adding values to the result column")
+  dfgenotype[[result]] <- dfgenotype[[result]] + second_amount  
+}
+
 assign("dfgenotype", value=dfgenotype, pos = -1, envir=parent.frame(n = 1)) 
-cat("finished!\n")
+cat("\n ... pop_step finished!\n")
 return(dfgenotype)
 }

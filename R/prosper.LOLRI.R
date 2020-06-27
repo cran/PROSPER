@@ -31,11 +31,10 @@
 
 #' @references Renton, M., Diggle, A., Manalil, S. & Powles, S. (2011): Does cutting herbicide rates threaten the sustainability of weed management in cropping systems? Journal of Theoretical Biology, Elsevier BV, 283, 14-27.
 
-#' @examples \dontrun{
-# data(param.LOLRI)
+#' @examples
+#' \donttest{
 #' mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=100, 
 #'                                        duration=15, repetitions=3)}
-#' 
 
 prosper.LOLRI <-
 function(
@@ -67,18 +66,9 @@ cat("SIMULATION START\n\n")
 #### --- Controll of the given data ----
 crop.list <- NA # not ideal
 mod_check(param.weed=param.weed, area=area, duration=duration, repetitions=repetitions, crop_list=crop_list, max_vec_length=max_vec_length)
-#if(anyNA(af)){af <- NULL}
-#n_loci <- length(af)
-#if(length(dom)<=n_loci) dom <- rep(dom[1],n_loci)
-
-#ngt     <- 3^n_loci                        #number of possible GT
-
-#gen_check(af=af, dom=dom)
 
 #- generating necessary objects: dfgenotype, mf, xprobab -----------------------
-#struc_preparation(Rmx=Rmx, n_loci=n_loci, epis=epis, dom=dom)                                              
 struc_preparation2(Rmx=Rmx, af=af, epis=epis, dom=dom)                                              
-#crop.list <- rep(crop_list,ceiling(duration/length(crop_list)))[1:duration] #setting for crop rotation
 
 cat("---------------------------------------------\n")
 cat("---------------------------------------------\n")
@@ -134,7 +124,7 @@ gen_diploid(start=c("survherb1", "survherb2"), start_comb="weedatharvest", resul
 #thats another branch in the germination tree
 Pindeath <- quanti(step_name="Pindeath", crop=crop, area=area, res_min = 0)
                                                            #the proportion of surviving seeds is taken as probability
-pop_step(start="germ_dorm", result="SB_dorm_surv", surv_prob=1-Pindeath)
+pop_step(start="dorm1", result="SB_dorm_surv", surv_prob=1-Pindeath)
 
 ### SB_autumn_end -----------------------------------------------------------------
 #the ending SB of one year (is the starting of the next year)
@@ -145,7 +135,7 @@ pop_step(start=c("SB_dorm_surv","new_seeds"), result="SB_autumn_end", surv_prob=
 # the result is saved in "sim_res", a new year starts
 # "dfgenotype" is cleaned up and prepared for the next cycle
 struc_saveSimData( rep_counter=rep_counter, simcycle=year, 
-                               start_name="SB_autumn", end_name="SB_autumn_end",
+                               start_names="SB_autumn", end_names="SB_autumn_end",
                                #loci=n_loci,
                                 simstruc=c(repetitions, duration))
                              

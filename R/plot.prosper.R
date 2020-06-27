@@ -12,7 +12,7 @@
 
 #' @examples
 #' data(param.LOLRI)
-#' mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=50, 
+#' mod_lolri    <- prosper.LOLRI(param.weed=param.LOLRI, area=20,  af = c(0.005, 0.01),
 #'                                        duration=3, repetitions=2)
 #' plot(mod_lolri)
 
@@ -25,16 +25,17 @@ if (!isGeneric("plot"))
 setMethod( "plot",
            c(x="prosper", y="missing"),
            function(x,y, plot_var="SB_autumn", ...){
-sinkv <- ifelse(.Platform$OS.type=="windows","NUL" , "/dev/null")
-sink(sinkv)
+#sinkv <- ifelse(.Platform$OS.type=="windows","NUL" , "/dev/null")
+#sink(sinkv)
 dat <- summary(x)
-sink()
+#sink()
 numerics <- dat$population$numerics
 counts <- dat$population$counts
-genetics <- dat$genetics
+
+
 
 if(length(plot_var) != 1)  stop("You must set one varibale to be plotted as plot_var")
-if(!(plot_var %in% names(counts))) stop(paste(plot_var, "is not part of the variable names"))
+if(!(plot_var %in% names(counts))) stop(paste(plot_var, "is not part of the variable names. Please set plot_var in plot() correctly."))
 
 
 ###---------------------------------------------------
@@ -56,6 +57,8 @@ graphics::axis(1,c(1:max(numerics$simcycle)))
    
 ###---------------------------------------------------
 #Genetics
+if(!is.null(dat$genetics)){
+   genetics <- dat$genetics   
 dev.new()
  plotcols <- c(which(names(genetics)=="simcycle"), grep("m_", names(genetics)))  
  
@@ -77,6 +80,8 @@ points(genetics[,c(1, plotcols[5]),with=FALSE], type="p",pch=1, ...)
 
 legend(x="topright", legend=names(genetics)[plotcols[-1]], inset=c(0.003,0.003),lty=c(1,2,3,4),pch=c(16,17,18,1),merge=T, col=c("black","black","black","black"))
 graphics::axis(1,c(1:max(genetics$simcycle)))
-           
+}#END plot genetics 
+
+          
 }#END function
 )#END Method

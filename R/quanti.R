@@ -3,7 +3,7 @@
 #' @description This is a working horse of PROSPER. It quantifies the number or the proportion of individuals entering the next development stage using predefined formulas (\code{formul}). Typically these formulas are the results of experiments.
 
 #' @export
-#' @param origin       number or log-number of individuals at the start. \code{numeric}. 
+#' @param origin       numbers or log-numbers of individuals at the start for every genotype. \code{numeric}. Alternatively the columnaes of dfgenotype can be used.
 #' @param step_name     step name in the database containing the model parameters. \code{character}.
 # @param param.weed   data with population dynamic model parameters. \code{data.frame}.
 #' @template crop     
@@ -43,8 +43,6 @@ function(origin=NA, step_name, crop, proportion=TRUE, equal_dis=TRUE, res_max=NA
 
 param.weed <- get0("param.weed", envir = parent.frame(n = 1)) 
 dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1)) 
-
-      
       
       #----- checks for origin                
       if(!is.na(origin) & !(is.numeric(origin) | is.character(origin))) stop("quanti(): origin must be numeric or character.")
@@ -54,29 +52,14 @@ dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
             origin <- origin[1]
             warning("quanti(): origin has length > 1. Only the first element is used.")}
             
-            if(origin %in% names(dfgenotype))
-            {
-            
-            #tmp <- dfgenotype[[origin]]
-            #print(paste("str_tmp: ", str(tmp), "tmp: ", tmp))
-            #if(length(tmp)>1) {
-            #warning("quanti(): the name of origin is not unique. Only the first element is used.")
-           # tmp1 <- tmp[1]
-            #}
-            #origin <- tmp
-            
-            
-            origin <- sum(dfgenotype[[origin]])
-            }else{stop("quanti() the name given as origin is not a column name of dfgenotype")}
+            if(origin %in% names(dfgenotype)) {
+             origin <- sum(dfgenotype[[origin]])
+             }else{stop("quanti() the name given as origin is not a column name of dfgenotype")}
       }#END if(is.character)
       if(log_values==TRUE) origin <- log(origin+1)
       }#END if(!is.na)
-
-      
-      
       
       #----- checks for param.weed   
-             #c("weed","crop","variable","name","mean","se","model", "range_low", "range_up", "source")
       nam <- c("weed","crop","step","name","estimate","std.error","model", "range_low", "range_up", "source")
       if(any(names(param.weed) != nam)){
          errnam <- paste("quanti(): Column names of param.weed are not correct. They must be named: ", paste(nam, collapse=" "), sep="")
@@ -94,13 +77,12 @@ dfgenotype <- get0("dfgenotype", envir = parent.frame(n = 1))
       
 ###-----------------------------------------------------------------------------
 # other model dependent variables such as "year" can be passed by "addit_variables".
-
       if(is.character(addit_variables)){
                varslist <- mget(addit_variables,envir=parent.frame(n = 1))       #mget() returns a list, the envir is the parent.frame
                varsnames <- names(varslist)
                eval(parse(text=paste(varsnames, "<-", varslist,";")))            #this assigns all the "addit_variables"
       }#END if(addit_variables)
-      
+
 ###-----------------------------------------------------------------------------
 ###--- assumptions, shortcuts...
       if(is.na(origin)){               #if no origin is used, the estimate as returned as fixed value.
@@ -153,31 +135,35 @@ for(area_ in seq_len(area)){
                       }else{
                       parameters <- parameters_all
                       }#END if(!anyNA)
-
 if(is.na(formul)){#if no formul is named, the model from param.weed is taken. if there is none, the "mean"-value from param.weed is returned
-            formul<- ifelse(!is.na(parameters$model[1]),as.character(parameters$model[1]),NA)
+            formul<- ifelse(!is.na(parameters$model[1]) & parameters$model[1] != "",as.character(parameters$model[1]),NA)
                        }
 if(is.na(formul)){               #if no formula or model is used, the mean as returned as fixed value.
-                        if(is.na(parameters$estimate)) stop("Function quanti() produced NA result.")
-                        if(log_values==TRUE){
-                                             res <- ifelse(back_log==TRUE, parameters_all$estimate, (exp(parameters_all$estimate)-1))
-                                             }
-                        if(log_values==FALSE){
-                                             res <- ifelse(back_log==TRUE, log(parameters_all$estimate+1), parameters_all$estimate)
-                                             }
-                        return(res)
-                        }      
+  if(is.na(parameters$estimate)) stop("Function quanti() has NA estimates to work with.")
+  if(log_values==TRUE){
+    res <- ifelse(back_log==TRUE, parameters_all$estimate, (exp(parameters_all$estimate)-1))
+    }
+  if(log_values==FALSE){
 
+    res <- ifelse(back_log==TRUE, log(parameters_all$estimate+1), parameters_all$estimate)
+  }
+  return(res)
+}      
+      
 ### -- all variables are calculated --------------------------------------------            
       vars <- all.vars(parse(text=formul))      #all variables in the formula listed
-      vars <- vars[vars!="x"]                   #x is origin, not anything other
-      vars <- vars[vars %in% parameters$name]   #only named variables are used from parameter, all other from ...
-
+      vars <- vars[vars!="x" & !(vars %in% addit_variables)]                   #x is origin, not anything other
+      vars_value <- c()
+      
       for(i in 1:length(vars)){                                              #calculation of every other parameter
-             eval(parse(text=paste(vars[i],
-             "<- rnorm(1, parameters$estimate[parameters$name == vars[i]], parameters$std.error[parameters$name == vars[i]])")))
-             }#END for(i)
+        current_estimate <- parameters$estimate[parameters$name == vars[i]]  
+        current_sterr <- parameters$std.error[parameters$name == vars[i]]
+        current_sterr <- ifelse(length(current_sterr)==0 | is.na(current_sterr),0,current_sterr)
 
+        vars_value[i] <- rnorm(1,current_estimate, current_sterr)
+        assign(vars[i], vars_value[i])
+        assign("x", x_all[i])
+      }#END for(i)
       
 ### -- the result for one area unit is calculated ------------------------------             
       res_tmp <- eval(parse(text=formul))
@@ -185,7 +171,7 @@ if(is.na(formul)){               #if no formula or model is used, the mean as re
 # --- proportion
       res_tmp <- ifelse(
               log_values==TRUE,((exp(res_tmp)-1))/(exp(x)-1),            
-              sum(res_tmp)/origin)                                       
+              sum(res_tmp)/x) 
                                                                          
 
 
@@ -231,12 +217,17 @@ if(is.na(formul)){               #if no formula or model is used, the mean as re
 
 ### -- all variables are calculated --------------------------------------------            
       vars <- all.vars(parse(text=formul))      #all variables in the formula listed
-      vars <- vars[vars!="x"]                   #x is origin, not anything other
-      vars <- vars[vars %in% parameters$name]   #only named variables are used from parameter, all other from ...
-      
+      vars <- vars[vars!="x" & !(vars %in% addit_variables)]                   #x is origin, not anything other
+      vars_value <- c()
       for(i in 1:length(vars)){                                              #calculation of every other parameter
-             eval(parse(text=paste(vars[i],
-             "<- rnorm(1, parameters$estimate[parameters$name == vars[i]], parameters$std.error[parameters$name == vars[i]])")))
+        current_estimate <- parameters$estimate[parameters$name == vars[i]]  
+        current_sterr <- parameters$std.error[parameters$name == vars[i]]
+        current_sterr <- ifelse(length(current_sterr)==0 | is.na(current_sterr),0,current_sterr)
+
+        
+        vars_value[i] <- rnorm(1,current_estimate, current_sterr)
+        assign(vars[i], vars_value[i])
+        assign("x", x_all[i])
              }#END for(i)
       
 ### -- the result for one area unit is calculated ------------------------------                
